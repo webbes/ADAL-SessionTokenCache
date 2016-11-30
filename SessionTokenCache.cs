@@ -1,27 +1,22 @@
 ﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using System.Web;
 using System.Web.SessionState;
 
 namespace Scenario1 {
-    public class NaiveSessionCache : TokenCache {
+    public class SessionTokenCache : TokenCache {
         private static readonly string itemsKey = "08A1A4F3-4BA3-4DC2-8ABC-736C547E175B";
         private static readonly string sessionKey = "63389DBF-0C2D-4F01-82E1-F8F21B3E0F2A";
 
-        public static NaiveSessionCache Current {
+        public static SessionTokenCache Current {
             get {
-                NaiveSessionCache retVal = null;
+                SessionTokenCache retVal = null;
                 var contextItems = HttpContext.Current.Items;
                 lock (contextItems.SyncRoot) {
                     if (!contextItems.Contains(itemsKey)) {
-                        retVal = new NaiveSessionCache();
+                        retVal = new SessionTokenCache();
                         contextItems.Add(itemsKey, retVal);
                     } else {
-                        retVal = contextItems[itemsKey] as NaiveSessionCache;
+                        retVal = contextItems[itemsKey] as SessionTokenCache;
                     }
                 }
 
@@ -29,7 +24,7 @@ namespace Scenario1 {
             }
         }
 
-        private NaiveSessionCache() : base() {
+        private SessionTokenCache() : base() {
             this.session = HttpContext.Current.Session;
             this.AfterAccess = AfterAccessNotification;
             this.BeforeAccess = BeforeAccessNotification;
